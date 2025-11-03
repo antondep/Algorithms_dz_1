@@ -1,22 +1,34 @@
 package ucu.edu;
 
 public class ExperimentResult {
-    public int dataSize;
-    public long op1, op2, op3, totalOps; 
-    public long memoryMB;
+    public final String dataTag;
+    public final String containerType;
+    public final long top100Nanos;
+    public final long bestGroupNanos;
+    public final long setRatingNanos;
+    public final long usedMemoryMB;
 
-    public ExperimentResult(int dataSize, long op1, long op2, long op3, long totalOps, long memoryMB) {
-        this.dataSize = dataSize;
-        this.op1 = op1;
-        this.op2 = op2;
-        this.op3 = op3;
-        this.totalOps = totalOps;
-        this.memoryMB = memoryMB;
+    public ExperimentResult(String dataTag, String containerType,
+            long top100Nanos, long bestGroupNanos, long setRatingNanos, long usedMemoryMB) {
+        this.dataTag = dataTag;
+        this.containerType = containerType;
+        this.top100Nanos = top100Nanos;
+        this.bestGroupNanos = bestGroupNanos;
+        this.setRatingNanos = setRatingNanos;
+        this.usedMemoryMB = usedMemoryMB;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Size=%d, Total=%d Top100:%d, SetRating:%d, BestGroup:%d, Mem=%dMB",
-                dataSize, totalOps, op1, op2, op3, memoryMB);
+    public String toCSVLine() {
+        return String.format("\"%s\",\"%s\",%.3f,%.3f,%.3f,%.3f",
+                dataTag,
+                containerType,
+                top100Nanos / 1_000_000.0,
+                bestGroupNanos / 1_000_000.0,
+                setRatingNanos / 1_000_000.0,
+                usedMemoryMB / 1.0);
+    }
+
+    public static String csvHeader() {
+        return "dataTag,container,top100_ms,bestGroup_ms,setRating_ms,memory_mb";
     }
 }
